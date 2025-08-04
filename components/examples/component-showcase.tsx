@@ -24,7 +24,6 @@ import {
 import { Checkbox } from "@/components/ui/8bit/checkbox";
 import { Input } from "@/components/ui/8bit/input";
 import { Label } from "@/components/ui/8bit/label";
-import { Progress } from "@/components/ui/8bit/progress";
 import {
   Select,
   SelectContent,
@@ -43,6 +42,7 @@ import { Textarea } from "@/components/ui/8bit/textarea";
 import { CommandExample } from "@/components/examples/command";
 
 import GameOver from "../ui/8bit/blocks/game-over";
+import GameProgress from "../ui/8bit/blocks/game-progress";
 import MainMenu from "../ui/8bit/blocks/main-menu";
 import { Skeleton } from "../ui/8bit/skeleton";
 
@@ -133,34 +133,7 @@ export default function ComponentShowcase() {
           Skeleton
         </Skeleton>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Game Progress</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span>Health</span>
-                <span>75%</span>
-              </div>
-              <Progress value={75} />
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span>Mana</span>
-                <span>45%</span>
-              </div>
-              <Progress value={45} variant="retro" />
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span>Experience</span>
-                <span>90%</span>
-              </div>
-              <Progress value={90} />
-            </div>
-          </CardContent>
-        </Card>
+        <GameProgress />
 
         {/* Tabs Example */}
         <Card>
