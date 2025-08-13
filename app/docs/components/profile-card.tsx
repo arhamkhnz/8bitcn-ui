@@ -49,7 +49,7 @@ export default function ProfileCard({
   description,
 }: ProfileCardProps) {
   return (
-    <Card id="profile-card" className="min-w-sm max-w-md">
+    <Card className="min-w-sm max-w-md">
       <CardHeader className="flex flex-col items-center gap-2">
         <Avatar className="size-20" variant={isRetroAvatar ? "pixel" : "retro"}>
           <AvatarImage src={avatarUrl} alt={name || "Avatar"} />
@@ -57,7 +57,7 @@ export default function ProfileCard({
         </Avatar>
 
         <CardTitle>
-          <h3>{name || "Your Name"}</h3>
+          <h3 className="text-center">{name || "Your Name"}</h3>
         </CardTitle>
 
         {badgeTitle ? <Badge>{badgeTitle}</Badge> : null}

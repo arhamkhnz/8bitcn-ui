@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 
+import * as htmlToImage from "html-to-image";
+
 import { Button } from "@/components/ui/8bit/button";
 import {
   Card,
@@ -13,6 +15,8 @@ import { Input } from "@/components/ui/8bit/input";
 import { Label } from "@/components/ui/8bit/label";
 import { Switch } from "@/components/ui/8bit/switch";
 import { Textarea } from "@/components/ui/8bit/textarea";
+
+import { SelectThemeDropdown } from "@/components/select-theme-dropdown";
 
 import CopyProfileCardDialog from "../docs/components/copy-profile-card-dialog";
 import ProfileCard from "../docs/components/profile-card";
@@ -45,8 +49,6 @@ export default function ProfileCreatorPage() {
     safeXUrl: "",
     description: "",
   });
-
-  const [isDownloading, setIsDownloading] = useState(false);
 
   const safeGithubUrl = useMemo(() => {
     if (!profile.githubUrl) return "";
@@ -260,34 +262,54 @@ export default function ProfileCard() {
 }`;
   };
 
-  const handleDownload = async () => {
+  const getImage = async () => {
+    const node = document.getElementById("profile-card") as HTMLElement | null;
+    if (!node) return;
+
+    await new Promise((r) => requestAnimationFrame(() => r(undefined)));
+
+    const previousFont = node.style.fontFamily;
+    node.style.fontFamily = '"Press Start 2P", system-ui, sans-serif';
+
     try {
-      setIsDownloading(true);
-      const res = await fetch("/api/profile-card/screenshot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          profile: {
-            ...profile,
-            safeGithubUrl,
-            safeXUrl,
-          },
-        }),
+      // 1. Fetch Google Fonts CSS
+      let fontCss = await fetch(
+        "https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      ).then((r) => r.text());
+
+      // 2. Find font URLs in the CSS
+      const fontUrls = fontCss.match(/https:\/\/[^)]+\.woff2/g) || [];
+
+      // 3. Replace each URL with base64 font data
+      for (const url of fontUrls) {
+        const fontResp = await fetch(url);
+        const fontBuffer = await fontResp.arrayBuffer();
+        const fontBase64 = `data:font/woff2;base64,${btoa(
+          String.fromCharCode(...new Uint8Array(fontBuffer))
+        )}`;
+        fontCss = fontCss.replace(url, fontBase64);
+      }
+
+      // 4. Generate PNG with embedded font
+      const dataUrl = await htmlToImage.toPng(node, {
+        cacheBust: true,
+        pixelRatio: 2,
+        backgroundColor: "#ffffff",
+        skipFonts: false,
+        fontEmbedCSS: fontCss,
       });
-      if (!res.ok) throw new Error("Failed to generate screenshot");
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
+
+      // 5. Download PNG
       const a = document.createElement("a");
-      a.href = url;
+      a.href = dataUrl!;
       a.download = "profile-card.png";
       document.body.appendChild(a);
       a.click();
       a.remove();
-      URL.revokeObjectURL(url);
     } catch (e) {
-      console.error(e);
+      console.error("html-to-image failed", e);
     } finally {
-      setIsDownloading(false);
+      node.style.fontFamily = previousFont;
     }
   };
 
@@ -419,26 +441,29 @@ export default function ProfileCard() {
         </Card>
 
         <div className="space-y-4">
-          <ProfileCard
-            name={profile.name}
-            avatarUrl={profile.avatarUrl}
-            badgeTitle={profile.badgeTitle}
-            isRetroAvatar={profile.isRetroAvatar}
-            githubUrl={profile.githubUrl}
-            xUrl={profile.xUrl}
-            githubUsername={profile.githubUsername}
-            xUsername={profile.xUsername}
-            safeGithubUrl={safeGithubUrl}
-            safeXUrl={safeXUrl}
-            description={profile.description}
-          />
+          <h2 className="text-center text-lg font-bold">Preview</h2>
+          <div className="max-w-xs mx-auto">
+            <SelectThemeDropdown />
+          </div>
+          <div id="profile-card" className="flex justify-center p-5">
+            <ProfileCard
+              name={profile.name}
+              avatarUrl={profile.avatarUrl}
+              badgeTitle={profile.badgeTitle}
+              isRetroAvatar={profile.isRetroAvatar}
+              githubUrl={profile.githubUrl}
+              xUrl={profile.xUrl}
+              githubUsername={profile.githubUsername}
+              xUsername={profile.xUsername}
+              safeGithubUrl={safeGithubUrl}
+              safeXUrl={safeXUrl}
+              description={profile.description}
+            />
+          </div>
 
-          <div className="flex gap-5 items-center">
+          <div className="flex gap-5 items-center justify-center">
             <CopyProfileCardDialog code={generateProfileCardCode()} />
-
-            <Button onClick={handleDownload} disabled={isDownloading}>
-              {isDownloading ? "Downloading..." : "Download PNG"}
-            </Button>
+            <Button onClick={getImage}>Download PNG</Button>
           </div>
         </div>
       </div>
