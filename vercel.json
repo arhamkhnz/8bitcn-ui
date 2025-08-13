@@ -1,7 +1,9 @@
 {
   "functions": {
     "app/api/profile-card/screenshot/route.ts": {
-      "includeFiles": "node_modules/@sparticuz/chromium/bin/**"
+      "includeFiles": "node_modules/@sparticuz/chromium/bin/**",
+      "memory": 1024,
+      "maxDuration": 30
     }
   }
 }
