@@ -25,13 +25,6 @@ import { Checkbox } from "@/components/ui/8bit/checkbox";
 import { Input } from "@/components/ui/8bit/input";
 import { Label } from "@/components/ui/8bit/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/8bit/select";
-import {
   Tabs,
   TabsContent,
   TabsList,
@@ -41,6 +34,7 @@ import { Textarea } from "@/components/ui/8bit/textarea";
 
 import { CommandExample } from "@/components/examples/command";
 
+import DifficultySelect from "../ui/8bit/blocks/difficulty-select";
 import GameOver from "../ui/8bit/blocks/game-over";
 import GameProgress from "../ui/8bit/blocks/game-progress";
 import MainMenu from "../ui/8bit/blocks/main-menu";
@@ -170,28 +164,7 @@ export default function ComponentShowcase() {
 
       {/* Column 3 */}
       <div className="flex flex-col gap-4 w-full">
-        <Card>
-          <CardHeader>
-            <CardTitle>Product Status</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="status">Status</Label>
-                <Select>
-                  <SelectTrigger id="status" aria-label="Select status">
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="published">Active</SelectItem>
-                    <SelectItem value="archived">Archived</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <DifficultySelect />
 
         <CommandExample />
 
