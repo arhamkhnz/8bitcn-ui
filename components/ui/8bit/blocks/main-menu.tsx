@@ -1,5 +1,3 @@
-import { Play, Power, Settings, Trophy, Users } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/8bit/button";
@@ -14,25 +12,21 @@ import {
 const menuItems = [
   {
     label: "START GAME",
-    icon: Play,
     action: () => console.log("Starting game..."),
   },
   {
     label: "OPTIONS",
-    icon: Settings,
     action: () => console.log("Showing options..."),
   },
   {
     label: "HIGH SCORES",
-    icon: Trophy,
     action: () => console.log("Showing high scores..."),
   },
   {
     label: "MULTIPLAYER",
-    icon: Users,
     action: () => console.log("Multiplayer mode..."),
   },
-  { label: "QUIT", icon: Power, action: () => console.log("Quitting game...") },
+  { label: "QUIT", action: () => console.log("Quitting game...") },
 ];
 
 export default function MainMenu({
@@ -49,7 +43,6 @@ export default function MainMenu({
         <div className="flex flex-col gap-8">
           {menuItems.map((item) => (
             <Button key={item.label} className="flex items-center gap-2">
-              <item.icon className="size-4" />
               <span>{item.label}</span>
             </Button>
           ))}
