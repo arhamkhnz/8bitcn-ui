@@ -29,6 +29,11 @@ const blocks = [
     title: "Gaming",
     href: "/blocks/gaming",
   },
+  {
+    id: "dashboard",
+    title: "Dashboard",
+    href: "/blocks/dashboard",
+  },
 ];
 
 export default function BlocksNavigation({ active }: BlocksNavigationProps) {
